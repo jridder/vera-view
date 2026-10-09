@@ -7,27 +7,30 @@ Text for Partner Center (app > Submission > Store listings > English). Screensho
 Vera View
 
 ## Description
-Vera View is a fast, lightweight viewer for diagrams and drawings saved in the Microsoft® Visio®
-file formats (.vsdx, .vsdm, .vstx and .vstm). Open a file and see it as it was drawn: no
-account, no subscription and nothing to edit by accident.
+Vera View is a fast, simple viewer for diagrams saved in the Microsoft® Visio® file formats (.vsdx, .vsdm, .vstx and .vstm). Open a flowchart, network diagram, floor plan or org chart and see it exactly as it was drawn, ready to pan, zoom and search.
 
-Open drawings from the Open button, by dragging a file onto the window, or straight from File
-Explorer with "Open with". Large network diagrams and floor plans with tens of thousands of
-shapes load in seconds and stay smooth while you pan and zoom.
+Built for big drawings: diagrams with tens of thousands of shapes open in seconds and stay smooth as you move around them.
 
-• Shapes, connectors and arrowheads, groups, rotation, dashed and coloured lines
-• Text with font sizes, bold, italic, underline, colour, alignment and rotation
-• Stencil (master) shapes, styles, multiple pages and background pages
+WHAT YOU CAN DO
+• Open files from File Explorer ("Open with"), the Open button, or by dragging them onto the window
+• Zoom with Ctrl + mouse wheel or a touchpad pinch, and scroll with the wheel, arrow keys or scroll bars
+• Fit the whole page to the window with one key or a double-click
+• Find any text across every page, with each match highlighted and brought into view
+• Move between pages, including background pages
+
+WHAT IT SHOWS
+• Shapes, stencil shapes, connectors, arrowheads and groups, including rotated shapes
+• Fill colours, transparency, line weights, colours and dash patterns
+• Formatted text: font sizes, bold, italic, underline, colour, alignment and rotation
 • Embedded pictures
-• Find text across every page, with matches highlighted and zoomed into view
-• Smooth zoom (Ctrl + mouse wheel or pinch), scrolling and scroll bars
-• Read-only: Vera View never modifies your files
 
-Vera View works offline and does not collect, store or send any personal information.
+PRIVATE AND SAFE
+• Read-only: Vera View never changes your files
+• Works completely offline, with no account, no ads and no data collected
 
-Microsoft and Visio are trademarks of the Microsoft group of companies. Vera View is an
-independent product and is not affiliated with, sponsored by, or endorsed by Microsoft
-Corporation.
+Not supported yet: older .vsd files (save them as .vsdx first), EMF/WMF pictures, and effects such as gradients and shadows.
+
+Microsoft and Visio are trademarks of the Microsoft group of companies. Vera View is an independent product and is not affiliated with, sponsored by, or endorsed by Microsoft Corporation.
 
 ## Product features (one per line, up to 20)
 View .vsdx, .vsdm, .vstx and .vstm drawings
