@@ -52,6 +52,20 @@ View under "Open with" and in Settings > Default apps for .vsdx/.vsdm/.vstx/.vst
 optional checkboxes for making it the default viewer and for a desktop shortcut. Silent
 install: `VeraView-Setup-x.y.z.exe /VERYSILENT /CURRENTUSER`.
 
+### Microsoft Store: `dist\VeraView-<version>.msix`
+
+```
+powershell -ExecutionPolicy Bypass -File installer\build-msix.ps1
+```
+
+Needs the Windows 10/11 SDK (MakeAppx, MakePri). Produces an unsigned MSIX for upload to
+Partner Center, which signs it. The package identity in `installer/msix/AppxManifest.xml`
+must match Partner Center (Product management > Product identity). Add `-TestSign` to also
+write a self-signed `-test.msix` and `.cer` for installing on your own PC (trust the `.cer`
+under Local Machine > Trusted People first). Store listing text, screenshots and the privacy
+policy are in `store/`. The Store logos (`assets/msix/`) come from
+`cargo run --example make_icon`.
+
 ### Linux: `dist/VeraView-<version>-x86_64.AppImage` and `dist/vera-view_<version>-1_amd64.deb`
 
 ```

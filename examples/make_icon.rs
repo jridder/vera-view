@@ -45,14 +45,20 @@ fn mix(a: [f32; 3], b: [f32; 3], t: f32) -> [f32; 3] {
 
 /// Render at `size` pixels with 8 × 8 supersampling for smooth edges.
 fn render(size: u32) -> image::RgbaImage {
+    render_canvas(size, size, size as f32)
+}
+
+/// Render the icon `icon` pixels wide, centred on a transparent `w` × `h` canvas.
+fn render_canvas(w: u32, h: u32, icon: f32) -> image::RgbaImage {
     const SS: u32 = 8;
-    let scale = 256.0 / size as f32;
-    image::RgbaImage::from_fn(size, size, |px, py| {
+    let scale = 256.0 / icon;
+    let (ox, oy) = ((w as f32 - icon) * 0.5, (h as f32 - icon) * 0.5);
+    image::RgbaImage::from_fn(w, h, |px, py| {
         let mut acc = [0.0f32; 4];
         for sy in 0..SS {
             for sx in 0..SS {
-                let x = (px as f32 + (sx as f32 + 0.5) / SS as f32) * scale;
-                let y = (py as f32 + (sy as f32 + 0.5) / SS as f32) * scale;
+                let x = (px as f32 + (sx as f32 + 0.5) / SS as f32 - ox) * scale;
+                let y = (py as f32 + (sy as f32 + 0.5) / SS as f32 - oy) * scale;
                 let [r, g, b, a] = sample(x, y);
                 // Accumulate premultiplied colour.
                 acc[0] += r * a;
@@ -128,6 +134,45 @@ fn main() -> std::io::Result<()> {
     icns.extend_from_slice(&body);
     std::fs::write("assets/vera-view.icns", icns)?;
 
-    println!("Wrote assets/vera-view.ico, vera-view.icns, icon-256.png and icon-512.png");
+    write_msix_assets()?;
+    println!("Wrote assets/vera-view.ico, vera-view.icns, icon-256.png, icon-512.png and assets/msix/");
+    Ok(())
+}
+
+/// Logos for the Microsoft Store (MSIX) package. Windows picks the variant matching the
+/// display scale (`scale-N`) or the exact pixel size it needs (`targetsize-N`, used for the
+/// taskbar, Start list and file icons).
+fn write_msix_assets() -> std::io::Result<()> {
+    let dir = std::path::Path::new("assets/msix");
+    std::fs::create_dir_all(dir)?;
+    for entry in std::fs::read_dir(dir)? {
+        std::fs::remove_file(entry?.path())?;
+    }
+    let scales = [100u32, 125, 150, 200, 400];
+    // (file stem, width and height at 100%, icon size at 100%)
+    let logos: [(&str, f32, f32, f32); 7] = [
+        ("Square44x44Logo", 44.0, 44.0, 44.0),
+        ("Square150x150Logo", 150.0, 150.0, 96.0),
+        ("Wide310x150Logo", 310.0, 150.0, 96.0),
+        ("SmallTile", 71.0, 71.0, 48.0),
+        ("LargeTile", 310.0, 310.0, 192.0),
+        ("StoreLogo", 50.0, 50.0, 50.0),
+        ("SplashScreen", 620.0, 300.0, 192.0),
+    ];
+    for (stem, w, h, icon) in logos {
+        for scale in scales {
+            let k = scale as f32 / 100.0;
+            let img = render_canvas((w * k).round() as u32, (h * k).round() as u32, icon * k);
+            std::fs::write(dir.join(format!("{stem}.scale-{scale}.png")), png_bytes(&img))?;
+        }
+    }
+    // Exact-size app icons; "altform-unplated" variants are used on the taskbar without a
+    // coloured backplate. The icon has its own background, so both are the same image.
+    for size in [16u32, 20, 24, 30, 32, 36, 40, 48, 60, 64, 72, 80, 96, 256] {
+        let data = png_bytes(&render(size));
+        std::fs::write(dir.join(format!("Square44x44Logo.targetsize-{size}.png")), &data)?;
+        std::fs::write(dir.join(format!("Square44x44Logo.targetsize-{size}_altform-unplated.png")), &data)?;
+        std::fs::write(dir.join(format!("Square44x44Logo.targetsize-{size}_altform-lightunplated.png")), &data)?;
+    }
     Ok(())
 }
