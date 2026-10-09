@@ -3,6 +3,8 @@ name = "vera-view"
 version = "0.3.0"
 edition = "2024"
 description = "Vera View: a fast, read-only viewer for Microsoft Visio drawings"
+license = "MIT"
+repository = "https://github.com/jridder/vera-view"
 publish = false
 
 [profile.release]
