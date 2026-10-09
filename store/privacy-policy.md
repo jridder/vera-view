@@ -13,5 +13,8 @@ Vera View is a read-only viewer for drawing files. It works entirely on your dev
 
 If this policy changes, the updated version will be posted at this address with a new date.
 
-Questions: contact the publisher, Jeff Remec, through the support details on Vera View's
-Microsoft Store page.
+Questions about this policy: see https://jridder.github.io/vera-view-site/support.html
+
+<!-- Published at https://jridder.github.io/vera-view-site/privacy.html from the public
+     jridder/vera-view-site repository. Update both copies together. -->
+
