@@ -70,7 +70,7 @@ First release.
 - Privacy policy URL: https://jridder.github.io/vera-view-site/privacy.html
 - Website: https://jridder.github.io/vera-view-site/
 - Support contact info: https://jridder.github.io/vera-view-site/support.html
-  (requests go to GitHub Issues on the public jridder/vera-view-site repo)
+  (requests go to GitHub Issues on the jridder/vera-view repo)
 - Age rating questionnaire: no violence, no user-generated content shared online, no
   purchases, no location, no personal data. Expected rating: Everyone / PEGI 3
 - Restricted capability justification for "runFullTrust": "Vera View is a desktop app that

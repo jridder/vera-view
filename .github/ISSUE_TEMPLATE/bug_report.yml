@@ -1,0 +1,51 @@
+name: Report a problem
+description: Something doesn't work, or a drawing looks wrong
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a problem with Vera View. Issues are **public**, so please don't
+        attach confidential drawings. Describe the problem instead, or share a cut-down copy
+        with any private details removed.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What did you do, what did you expect, and what happened instead? Screenshots help.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Vera View version
+      description: Shown in the About box, e.g. 0.3.0
+    validations:
+      required: true
+  - type: dropdown
+    id: installed-from
+    attributes:
+      label: Where did you get Vera View?
+      options:
+        - Microsoft Store
+        - Windows installer from GitHub
+        - Linux AppImage
+        - Linux .deb package
+        - macOS .dmg
+        - Built from source
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: Operating system
+      description: e.g. Windows 11 24H2, Ubuntu 24.04, macOS 15
+    validations:
+      required: true
+  - type: textarea
+    id: drawing
+    attributes:
+      label: About the drawing
+      description: >-
+        If the problem is with a specific drawing: which Visio version created it, roughly how
+        many pages and shapes, and what kind of content (stencils, pictures, connectors...).

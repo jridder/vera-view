@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Privacy policy
+    url: https://jridder.github.io/vera-view-site/privacy.html
+    about: How Vera View handles your data (it collects none).
