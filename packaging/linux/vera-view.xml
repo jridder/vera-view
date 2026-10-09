@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- MIME types for Visio Open XML files. Recent shared-mime-info releases already define
+     these; shipping them as well makes file associations work on older distributions.
+     Duplicate definitions are merged by update-mime-database. -->
+<mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
+  <mime-type type="application/vnd.ms-visio.drawing.main+xml">
+    <comment>Visio drawing</comment>
+    <sub-class-of type="application/zip"/>
+    <glob pattern="*.vsdx"/>
+  </mime-type>
+  <mime-type type="application/vnd.ms-visio.drawing.macroEnabled.main+xml">
+    <comment>Visio macro-enabled drawing</comment>
+    <sub-class-of type="application/zip"/>
+    <glob pattern="*.vsdm"/>
+  </mime-type>
+  <mime-type type="application/vnd.ms-visio.template.main+xml">
+    <comment>Visio template</comment>
+    <sub-class-of type="application/zip"/>
+    <glob pattern="*.vstx"/>
+  </mime-type>
+  <mime-type type="application/vnd.ms-visio.template.macroEnabled.main+xml">
+    <comment>Visio macro-enabled template</comment>
+    <sub-class-of type="application/zip"/>
+    <glob pattern="*.vstm"/>
+  </mime-type>
+</mime-info>

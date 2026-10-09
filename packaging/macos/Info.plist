@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- Template: packaging/macos/build.sh replaces __VERSION__ and __BUNDLE_ID__. -->
+<plist version="1.0">
+<dict>
+    <key>CFBundleName</key>
+    <string>Vera View</string>
+    <key>CFBundleDisplayName</key>
+    <string>Vera View</string>
+    <key>CFBundleIdentifier</key>
+    <string>__BUNDLE_ID__</string>
+    <key>CFBundleExecutable</key>
+    <string>vera-view</string>
+    <key>CFBundleIconFile</key>
+    <string>vera-view</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>CFBundleShortVersionString</key>
+    <string>__VERSION__</string>
+    <key>CFBundleVersion</key>
+    <string>__VERSION__</string>
+    <key>CFBundleInfoDictionaryVersion</key>
+    <string>6.0</string>
+    <key>LSMinimumSystemVersion</key>
+    <string>11.0</string>
+    <key>LSApplicationCategoryType</key>
+    <string>public.app-category.graphics-design</string>
+    <key>NSHighResolutionCapable</key>
+    <true/>
+    <key>NSSupportsAutomaticGraphicsSwitching</key>
+    <true/>
+    <key>ITSAppUsesNonExemptEncryption</key>
+    <false/>
+
+    <!-- Lets Finder open Visio files with Vera View. "Alternate" rank lists it under
+         Open With without taking over from Visio or another default app. -->
+    <key>CFBundleDocumentTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleTypeName</key>
+            <string>Visio Drawing</string>
+            <key>CFBundleTypeRole</key>
+            <string>Viewer</string>
+            <key>LSHandlerRank</key>
+            <string>Alternate</string>
+            <key>LSItemContentTypes</key>
+            <array>
+                <string>com.microsoft.visio.vsdx</string>
+                <string>com.microsoft.visio.vsdm</string>
+                <string>com.microsoft.visio.vstx</string>
+                <string>com.microsoft.visio.vstm</string>
+            </array>
+        </dict>
+    </array>
+
+    <!-- macOS doesn't define types for Visio files, so declare them by extension. -->
+    <key>UTImportedTypeDeclarations</key>
+    <array>
+        <dict>
+            <key>UTTypeIdentifier</key>
+            <string>com.microsoft.visio.vsdx</string>
+            <key>UTTypeDescription</key>
+            <string>Visio Drawing</string>
+            <key>UTTypeConformsTo</key>
+            <array><string>public.data</string><string>public.content</string></array>
+            <key>UTTypeTagSpecification</key>
+            <dict>
+                <key>public.filename-extension</key>
+                <array><string>vsdx</string></array>
+                <key>public.mime-type</key>
+                <array><string>application/vnd.ms-visio.drawing.main+xml</string></array>
+            </dict>
+        </dict>
+        <dict>
+            <key>UTTypeIdentifier</key>
+            <string>com.microsoft.visio.vsdm</string>
+            <key>UTTypeDescription</key>
+            <string>Visio Macro-Enabled Drawing</string>
+            <key>UTTypeConformsTo</key>
+            <array><string>public.data</string><string>public.content</string></array>
+            <key>UTTypeTagSpecification</key>
+            <dict>
+                <key>public.filename-extension</key>
+                <array><string>vsdm</string></array>
+                <key>public.mime-type</key>
+                <array><string>application/vnd.ms-visio.drawing.macroEnabled.main+xml</string></array>
+            </dict>
+        </dict>
+        <dict>
+            <key>UTTypeIdentifier</key>
+            <string>com.microsoft.visio.vstx</string>
+            <key>UTTypeDescription</key>
+            <string>Visio Template</string>
+            <key>UTTypeConformsTo</key>
+            <array><string>public.data</string><string>public.content</string></array>
+            <key>UTTypeTagSpecification</key>
+            <dict>
+                <key>public.filename-extension</key>
+                <array><string>vstx</string></array>
+                <key>public.mime-type</key>
+                <array><string>application/vnd.ms-visio.template.main+xml</string></array>
+            </dict>
+        </dict>
+        <dict>
+            <key>UTTypeIdentifier</key>
+            <string>com.microsoft.visio.vstm</string>
+            <key>UTTypeDescription</key>
+            <string>Visio Macro-Enabled Template</string>
+            <key>UTTypeConformsTo</key>
+            <array><string>public.data</string><string>public.content</string></array>
+            <key>UTTypeTagSpecification</key>
+            <dict>
+                <key>public.filename-extension</key>
+                <array><string>vstm</string></array>
+                <key>public.mime-type</key>
+                <array><string>application/vnd.ms-visio.template.macroEnabled.main+xml</string></array>
+            </dict>
+        </dict>
+    </array>
+</dict>
+</plist>

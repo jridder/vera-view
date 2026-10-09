@@ -1,0 +1,49 @@
+[package]
+name = "vera-view"
+version = "0.3.0"
+edition = "2024"
+description = "Vera View: a fast, read-only viewer for Microsoft Visio drawings"
+publish = false
+
+[profile.release]
+lto = "thin"
+strip = true
+
+[dependencies]
+anyhow = "1.0.104"
+eframe = "0.36.2"
+image = { version = "0.25.10", default-features = false, features = ["png", "jpeg", "bmp", "gif"] }
+lyon_tessellation = "1.0.22"
+rfd = "0.17.2"
+roxmltree = "0.21.1"
+zip = { version = "8.6.0", default-features = false, features = ["deflate"] }
+
+[target.'cfg(target_os = "macos")'.dependencies]
+objc2 = "0.6.5"
+objc2-foundation = { version = "0.3.2", features = ["NSAppleEventDescriptor", "NSAppleEventManager", "NSNotification", "NSString", "NSURL"] }
+
+[build-dependencies]
+winresource = "0.1.31"
+
+# Debian package, built by packaging/linux/build.sh with cargo-deb.
+[package.metadata.deb]
+# TODO: set a real maintainer name and email before publishing.
+maintainer = "Vera View"
+section = "graphics"
+priority = "optional"
+extended-description = """\
+A fast, read-only viewer for Microsoft Visio drawings (.vsdx, .vsdm, .vstx, .vstm), \
+with pan, zoom, multi-page navigation and text search.
+Microsoft and Visio are trademarks of the Microsoft group of companies."""
+depends = "$auto"
+# Carlito has the same metrics as Calibri, Visio's default font, so text wraps as in Visio.
+recommends = "fonts-crosextra-carlito"
+assets = [
+    ["target/release/vera-view", "usr/bin/", "755"],
+    ["packaging/linux/vera-view.desktop", "usr/share/applications/", "644"],
+    ["packaging/linux/vera-view.xml", "usr/share/mime/packages/", "644"],
+    ["assets/icon-256.png", "usr/share/icons/hicolor/256x256/apps/vera-view.png", "644"],
+    ["assets/icon-512.png", "usr/share/icons/hicolor/512x512/apps/vera-view.png", "644"],
+    ["THIRD-PARTY-NOTICES.txt", "usr/share/doc/vera-view/", "644"],
+    ["README.md", "usr/share/doc/vera-view/", "644"],
+]

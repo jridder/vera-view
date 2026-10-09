@@ -1,0 +1,6 @@
+# Shell scripts must keep Unix line endings to run on Linux and macOS.
+*.sh text eol=lf
+# Generated binary assets.
+*.ico binary
+*.icns binary
+*.png binary

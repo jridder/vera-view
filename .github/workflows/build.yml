@@ -1,0 +1,101 @@
+# Tests Vera View on Windows, Linux and macOS, then builds the installers:
+#   Windows: VeraView-Setup-<version>.exe     Linux: .AppImage and .deb     macOS: .dmg
+# The packages are attached to each run as artifacts. macOS builds are ad-hoc signed unless
+# signing is added (see packaging/macos/build.sh), so Gatekeeper will warn on other Macs.
+name: Build
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  test:
+    name: Test (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-22.04, macos-14]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Linux build dependencies
+        if: runner.os == 'Linux'
+        run: >-
+          sudo apt-get update && sudo apt-get install -y libxkbcommon-dev libwayland-dev
+          libxcb-render0-dev libxcb-shape0-dev libxcb-xfixes0-dev
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo clippy --all-targets -- -D warnings
+      - run: cargo test
+
+  windows:
+    name: Windows installer
+    needs: test
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-about
+      - name: Install Inno Setup
+        run: choco install innosetup -y --no-progress
+      - name: Build installer
+        shell: pwsh
+        run: ./installer/build.ps1
+      - uses: actions/upload-artifact@v4
+        with:
+          name: vera-view-windows
+          path: dist/*.exe
+
+  linux:
+    name: Linux packages
+    needs: test
+    # The oldest supported runner: binaries built against an older glibc run on more distributions.
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install build dependencies
+        run: >-
+          sudo apt-get update && sudo apt-get install -y libxkbcommon-dev libwayland-dev
+          libxcb-render0-dev libxcb-shape0-dev libxcb-xfixes0-dev file
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-about,cargo-deb
+      - run: bash packaging/linux/build.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: vera-view-linux
+          path: |
+            dist/*.AppImage
+            dist/*.deb
+
+  macos:
+    name: macOS app
+    needs: test
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-apple-darwin,x86_64-apple-darwin
+      - uses: Swatinem/rust-cache@v2
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-about
+      - run: bash packaging/macos/build.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: vera-view-macos
+          path: dist/*.dmg

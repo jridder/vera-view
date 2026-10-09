@@ -1,0 +1,149 @@
+# Vera View
+
+A fast, read-only viewer for Microsoft Visio drawings, written in Rust with
+[egui](https://github.com/emilk/egui).
+
+## Usage
+
+```
+cargo run --release -- path\to\drawing.vsdx
+```
+
+Or start it with no arguments and use **Open…** (Ctrl+O), or drag a file onto the window.
+Runs on Windows 10/11, Linux (X11 and Wayland) and macOS 11+. On macOS, use ⌘ wherever
+Ctrl is listed below.
+
+| Action | Input |
+| --- | --- |
+| Pan | Drag, or the scroll bars |
+| Scroll | Mouse wheel (Shift + wheel sideways), touchpad swipe, arrow keys (Shift for bigger steps) |
+| Zoom | Ctrl + wheel / pinch (zooms around the cursor), `+` / `-` |
+| Fit page | Double-click, `F` or `0` |
+| Actual size | `1` |
+| Next / previous page | Page Down / Page Up |
+| Find text | Ctrl+F, then Enter / F3 for the next match, Shift+Enter / Shift+F3 for the previous, Esc to close |
+
+Find searches shape text (case-insensitive unless "Match case" is ticked), highlights every
+match on the page, and zooms to the current one. When a page has no more matches it continues
+on the next page that does, wrapping around at the end of the document.
+
+Command-line options: `--page N` opens page N; `--view X,Y,ZOOM%` centres the view on a
+paper point (inches, origin bottom-left); `--find TEXT` searches once the file loads;
+`--screenshot OUT.png` renders, saves a PNG
+and exits (handy for testing).
+
+## Building packages
+
+Each platform's package is built on that platform; the version comes from `Cargo.toml`. All
+three scripts refresh `THIRD-PARTY-NOTICES.txt` when cargo-about is installed
+(`cargo install cargo-about --locked --features cli`; required on Windows).
+[`.github/workflows/build.yml`](.github/workflows/build.yml) does all of this on GitHub's
+Windows, Linux and macOS machines for every push, and attaches the packages to the run.
+
+### Windows: `dist\VeraView-Setup-<version>.exe`
+
+```
+powershell -ExecutionPolicy Bypass -File installer\build.ps1
+```
+
+Needs Inno Setup 6 (`winget install JRSoftware.InnoSetup`). The setup installs per user by
+default (no admin prompt; "all users" is offered), adds a Start menu shortcut, registers Vera
+View under "Open with" and in Settings > Default apps for .vsdx/.vsdm/.vstx/.vstm, and offers
+optional checkboxes for making it the default viewer and for a desktop shortcut. Silent
+install: `VeraView-Setup-x.y.z.exe /VERYSILENT /CURRENTUSER`.
+
+### Linux: `dist/VeraView-<version>-x86_64.AppImage` and `dist/vera-view_<version>-1_amd64.deb`
+
+```
+bash packaging/linux/build.sh
+```
+
+Needs `libxkbcommon-dev libwayland-dev libxcb-render0-dev libxcb-shape0-dev libxcb-xfixes0-dev
+file` (Debian/Ubuntu names), and `cargo install cargo-deb` for the .deb. Both packages include
+a desktop entry (app menu and "Open With" for the four Visio file types), MIME type
+definitions and icons. The .deb recommends `fonts-crosextra-carlito`, a free font with the
+same metrics as Calibri (Visio's default), so text wraps as it does in Visio.
+
+### macOS: `dist/Vera View.app` and `dist/VeraView-<version>.dmg`
+
+```
+bash packaging/macos/build.sh
+```
+
+Run on a Mac with the Xcode command-line tools. Builds a universal app (Apple Silicon and
+Intel) and a drag-to-Applications disk image. Finder lists Vera View under "Open With" for
+Visio files without replacing the default app. Files opened from Finder arrive as Apple
+Events, which `src/macos.rs` handles.
+
+Without signing settings the app is ad-hoc signed: it runs on the Mac that built it, but
+Gatekeeper blocks it elsewhere. To distribute outside the App Store, set
+`MACOS_SIGN_IDENTITY` to a "Developer ID Application" certificate and `MACOS_NOTARY_PROFILE`
+to a `notarytool` keychain profile; the script then signs, notarizes and staples the DMG.
+For the Mac App Store, sign with `packaging/macos/AppStore.entitlements` (App Sandbox,
+read-only access to files the user opens) and an App Store distribution certificate, then
+upload with Xcode or Transporter.
+
+### Before publishing
+
+- **macOS bundle identifier:** `com.example.veraview` in `packaging/macos/build.sh` (or set
+  `BUNDLE_ID`) must be replaced with a reverse-DNS id you own.
+- **Debian maintainer:** set `maintainer` under `[package.metadata.deb]` in `Cargo.toml` to a
+  name and email.
+- **Code signing:** without it, Windows SmartScreen and macOS Gatekeeper warn on first run.
+
+## Open-source licenses
+
+`THIRD-PARTY-NOTICES.txt` lists every open-source component compiled into Vera View on any of
+the three platforms, with its license text. The build scripts regenerate it from the current
+dependencies (`about.toml` lists the accepted licenses, `installer\notices.hbs` is the
+template). It is embedded in the app (About > Third-party notices) and installed alongside it
+by every package. If a dependency change brings in a license that isn't in `about.toml`, the
+build stops so it can be reviewed. Keep the file under version control, since the app embeds
+it at compile time.
+
+The icons (`.ico`, `.icns` and PNGs in `assets/`) are generated by
+`cargo run --example make_icon`.
+
+## Supported
+
+- `.vsdx`, `.vsdm`, `.vstx`, `.vstm` (Visio 2013+ Open XML format)
+- Pages, background pages, drawing scale
+- Masters and master-shape inheritance, including re-evaluating geometry formulas
+  (`Width*0.5`, ...) for resized instances
+- Style sheet inheritance (line, fill, text)
+- Geometry: MoveTo, LineTo, ArcTo, EllipticalArcTo, Ellipse, NURBSTo, PolylineTo,
+  relative and Bézier rows; multiple sections with holes; NoFill / NoLine / NoShow
+- Groups, rotation and flips
+- Fill colour and transparency, line weight / colour / dash pattern, arrowheads
+- Text: per-run size, colour, bold, italic, underline, strikethrough; alignment,
+  margins, text-block transforms and rotation
+- Embedded PNG / JPEG / BMP / GIF images
+
+## Not (yet) supported
+
+- Legacy binary `.vsd` files (open in Visio and save as `.vsdx`)
+- EMF/WMF embedded images (shown as a labelled placeholder)
+- Gradients and fill patterns (drawn as solid fills), shadows, theme effects,
+  layer visibility, line-end styles beyond simple open/filled arrows
+
+## Trademarks
+
+Microsoft and Visio are trademarks of the Microsoft group of companies. Vera View is an
+independent product. It is not affiliated with, sponsored by, or endorsed by Microsoft
+Corporation. The same notice appears in the app's About box and in the executable's file
+properties.
+
+## Layout
+
+- `src/package.rs` – zip / Open Packaging Convention reading
+- `src/model.rs` – parses pages, masters, styles and shapes from the XML
+- `src/formula.rs` – small ShapeSheet formula evaluator
+- `src/geometry.rs` – transforms and curve flattening
+- `src/scene.rs` – resolves inheritance into drawable items (paper coordinates)
+- `src/viewer.rs` – the egui app
+- `src/macos.rs` – receives files opened from Finder
+- `installer/` – Windows installer; `packaging/linux/`, `packaging/macos/` – other platforms
+
+`cargo run --example make_sample` writes `samples/sample.vsdx`, a test drawing covering the
+features above. `cargo run --release --example inspect -- FILE.vsdx` prints page statistics
+and parse/layout timings.
